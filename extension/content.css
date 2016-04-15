@@ -1,0 +1,17 @@
+.ahn-info {
+   color: #fff;
+    height: 100%;
+    background: rgba(0,0,0,.6);
+    padding: 10px;
+}
+span.ahn-imdb-rating {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+}
+span.ahn-staring{
+	font-size: 13px;
+}
+span.ahn-imdb-rating span , span.ahn-staring span{
+    color: yellow;
+}

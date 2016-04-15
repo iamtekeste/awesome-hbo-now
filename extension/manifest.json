@@ -22,7 +22,7 @@
               "content.css"
           ],
           "js": [
-            "vendor/sprint.min.js",
+            "sprint.min.js",
             "content.js",
           ]
       }
