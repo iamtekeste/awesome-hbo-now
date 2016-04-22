@@ -1,8 +1,10 @@
 .ahn-info {
-   color: #fff;
+    color: #fff;
     height: 100%;
     background: rgba(0,0,0,.6);
     padding: 10px;
+    top: 0;
+    position: absolute;
 }
 span.ahn-imdb-rating {
     display: block;

@@ -1,61 +1,64 @@
-var getMediaBoxes = function () {
-	return $(".now-thumbnail");
+"use strict";
+var nowThumbnails;
+var nowThumbnailsOverlays = [];
+var titles = [];
+window.onload  = () => {
+  nowThumbnails = document.querySelectorAll('.now-thumbnail');
+  getTitles(nowThumbnails);
+  for(var i = 0; i < titles.length; i++) {
+    makeApiRequest(i, titles[i]);
+  }
 };
 
-var getMediaBoxObj =  mediaBoxes => {
-	var titles = [];
-	mediaBoxes.each((i, el) =>{
-		var obj = {
-			index: i,
-			title : $(el).find(".now-thumbnail-bottomtext").text().trim(),
-		}
-		titles.push(obj);
-	});
-	return titles
-}
-//get the movie/series boxes
-var mediaBoxes = getMediaBoxes();
-//foreach movie box get the title
-var mediaBoxObjs = getMediaBoxObj(mediaBoxes);
-function fetchIMDBData(movieObjs, cb){
-  var length = movieObjs.length;
-  var movies_data = new Object();
-  var count = 0;
-  movieObjs.forEach(function(movie){
-
-    var url = "http://www.omdbapi.com/?plot=short&r=json&t=" + encodeURIComponent(movie.title);
-    $.ajax({
-      url: url,
-      type: "GET",
-      success: function(data) {
-        data.index = count;
-        func(data);
-        // data.index = count;
-        // movies_data[count] = data;
-        count++;
-        // if (count === length) {
-        //   cb(movies_data);
-        // }
+function getTitles (nowThumbnails) {
+  [].forEach.call(nowThumbnails, (el) => {
+    var nowThumbnailChildren = el.childNodes;
+    [].forEach.call(nowThumbnailChildren , (el) => {
+      if(el.classList != undefined) {
+        if(el.classList.contains("now-thumbnail-bottomtext")) {
+          titles.push( el.childNodes[1].innerHTML );
+        }
+        if(el.classList.contains("now-thumbnail-overlay")) {
+          log(el)
+          nowThumbnailsOverlays.push(el);
+        }
       }
     });
   });
-};
-function func(data) {
-  console.log(data)
-}
-$(document).ready(function(){
-    	//get the movie/series boxes
-    var mediaBoxes = getMediaBoxes();
-    //foreach movie box get the title
-    var mediaBoxObjs = getMediaBoxObj(mediaBoxes);
-    fetchIMDBData(mediaBoxObjs, function (moviesData) {
-        //updateDom(mediaBoxes, moviesData);
-    });
-});
-
-function updateDom(mediaBoxes, moviesData) {
-  // console.log(moviesData[0]);
 }
 
-//create the ahn-info node
-//append ahn-info to now-thumbnail-overlay
+function makeApiRequest(index, title) {
+  var xhr = new XMLHttpRequest();
+  var encodedTitle = encodeURIComponent(title);
+  xhr.open('GET', 'https://www.omdbapi.com/?plot=short&r=json&t=' + title);
+  xhr.send();
+  xhr.onload = () => {
+    if(xhr.status === 200) {
+      var jsonResponse = JSON.parse(xhr.response)
+      updateDOM(jsonResponse, index)
+    }
+  }
+}
+
+function updateDOM(response, index) {
+  if(response.Plot != undefined) {
+    //create the ahn-info node
+    var ahnInfoNode = createAHNInfo(response);
+    //get the nowThumbnail at index index
+    nowThumbnailsOverlays[index].appendChild(ahnInfoNode)
+  }
+}
+
+function createAHNInfo(response) {
+ var ahnInfoHTML = ` <div class="ahn-info">
+    <p class="plot">
+      ${response.Plot}
+    </p>
+    <span class="ahn-imdb-rating"> 
+      <span>Rating: </span>
+      ${response.imdbRating}
+  </div> `;
+  var ahnInfoNode = document.createElement('div');
+  ahnInfoNode.innerHTML = ahnInfoHTML;
+  return ahnInfoNode;
+}

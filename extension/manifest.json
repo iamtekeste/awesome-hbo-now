@@ -22,7 +22,6 @@
               "content.css"
           ],
           "js": [
-            "vendor/sprint.min.js",
             "bundle.js"
           ]
       }
