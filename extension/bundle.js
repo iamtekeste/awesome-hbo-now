@@ -4,7 +4,7 @@ var nowThumbnails;
 var nowThumbnailsOverlays = [];
 var titles = [];
 window.onload = function () {
-  nowThumbnails = document.querySelectorAll('.now-thumbnail');
+  nowThumbnails = document.querySelectorAll('.now-thumbnail'); //$('.')
   getTitles(nowThumbnails);
   for (var i = 0; i < titles.length; i++) {
     makeApiRequest(i, titles[i]);
@@ -20,7 +20,6 @@ function getTitles(nowThumbnails) {
           titles.push(el.childNodes[1].innerHTML);
         }
         if (el.classList.contains("now-thumbnail-overlay")) {
-          log(el);
           nowThumbnailsOverlays.push(el);
         }
       }
@@ -42,7 +41,7 @@ function makeApiRequest(index, title) {
 }
 
 function updateDOM(response, index) {
-  if (response.Plot != undefined) {
+  if (response.Plot != undefined && response.Plot.length > 5) {
     //create the ahn-info node
     var ahnInfoNode = createAHNInfo(response);
     //get the nowThumbnail at index index
@@ -51,8 +50,12 @@ function updateDOM(response, index) {
 }
 
 function createAHNInfo(response) {
-  var ahnInfoHTML = " <div class=\"ahn-info\">\n    <p class=\"plot\">\n      " + response.Plot + "\n    </p>\n    <span class=\"ahn-imdb-rating\"> \n      <span>Rating: </span>\n      " + response.imdbRating + "\n  </div> ";
+  var ahnInfoHTML = " <div class=\"ahn-info\"> \n    <p class=\"plot\">\n      " + response.Plot + "\n    </p>\n    <span class=\"ahn-imdb-rating\"> \n      <span>Rating: </span>\n      " + response.imdbRating + "\n  </div> ";
   var ahnInfoNode = document.createElement('div');
   ahnInfoNode.innerHTML = ahnInfoHTML;
   return ahnInfoNode;
+}
+
+function log(x) {
+  console.log(x);
 }

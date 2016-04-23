@@ -3,7 +3,7 @@ var nowThumbnails;
 var nowThumbnailsOverlays = [];
 var titles = [];
 window.onload  = () => {
-  nowThumbnails = document.querySelectorAll('.now-thumbnail');
+  nowThumbnails = document.querySelectorAll('.now-thumbnail'); //$('.')
   getTitles(nowThumbnails);
   for(var i = 0; i < titles.length; i++) {
     makeApiRequest(i, titles[i]);
@@ -19,7 +19,6 @@ function getTitles (nowThumbnails) {
           titles.push( el.childNodes[1].innerHTML );
         }
         if(el.classList.contains("now-thumbnail-overlay")) {
-          log(el)
           nowThumbnailsOverlays.push(el);
         }
       }
@@ -28,7 +27,7 @@ function getTitles (nowThumbnails) {
 }
 
 function makeApiRequest(index, title) {
-  var xhr = new XMLHttpRequest();
+  var xhr = new XMLHttpRequest(); 
   var encodedTitle = encodeURIComponent(title);
   xhr.open('GET', 'https://www.omdbapi.com/?plot=short&r=json&t=' + title);
   xhr.send();
@@ -41,7 +40,7 @@ function makeApiRequest(index, title) {
 }
 
 function updateDOM(response, index) {
-  if(response.Plot != undefined) {
+  if(response.Plot != undefined && response.Plot.length > 5) {
     //create the ahn-info node
     var ahnInfoNode = createAHNInfo(response);
     //get the nowThumbnail at index index
@@ -50,7 +49,7 @@ function updateDOM(response, index) {
 }
 
 function createAHNInfo(response) {
- var ahnInfoHTML = ` <div class="ahn-info">
+ var ahnInfoHTML = ` <div class="ahn-info"> 
     <p class="plot">
       ${response.Plot}
     </p>
@@ -61,4 +60,8 @@ function createAHNInfo(response) {
   var ahnInfoNode = document.createElement('div');
   ahnInfoNode.innerHTML = ahnInfoHTML;
   return ahnInfoNode;
+}
+
+function log(x) {
+  console.log(x);
 }
