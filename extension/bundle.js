@@ -50,7 +50,7 @@ function updateDOM(response, index) {
 }
 
 function createAHNInfo(response) {
-  var ahnInfoHTML = " <div class=\"ahn-info\"> \n    <p class=\"plot\">\n      " + response.Plot + "\n    </p>\n    <span class=\"ahn-imdb-rating\"> \n      <span>Rating: </span>\n      " + response.imdbRating + "\n  </div> ";
+  var ahnInfoHTML = " <div class=\"ahn-info\" data-year=\"" + response.Year + "\"> \n    <p class=\"plot\">\n      " + response.Plot + "\n    </p>\n    <span class=\"ahn-imdb-rating\"> \n      <span>Rating: </span>\n      " + response.imdbRating + "\n  </div> ";
   var ahnInfoNode = document.createElement('div');
   ahnInfoNode.innerHTML = ahnInfoHTML;
   return ahnInfoNode;

@@ -49,7 +49,7 @@ function updateDOM(response, index) {
 }
 
 function createAHNInfo(response) {
- var ahnInfoHTML = ` <div class="ahn-info"> 
+ var ahnInfoHTML = ` <div class="ahn-info" data-year="${response.Year}"> 
     <p class="plot">
       ${response.Plot}
     </p>
