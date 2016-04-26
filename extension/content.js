@@ -63,7 +63,11 @@ function createAHNInfo(response) {
 }
 
 function getPage() {
-  return location.pathname.replace("/", "");
+  var page = location.pathname.replace("/", "");
+  if(page === "series")
+      return "series";
+  if (page === "movies")
+      return "movie"; 
 } 
 function log(x) {
   console.log(x);
