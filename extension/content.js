@@ -40,7 +40,7 @@ function makeApiRequest(index, title) {
 }
 
 function updateDOM(response, index) {
-  if(response.Plot != undefined && response.Plot.length > 5) {
+  if(response.Plot != undefined && response.Plot.length > 5 && getPage() === response.Type) {
     //create the ahn-info node
     var ahnInfoNode = createAHNInfo(response);
     //get the nowThumbnail at index index
@@ -62,6 +62,9 @@ function createAHNInfo(response) {
   return ahnInfoNode;
 }
 
+function getPage() {
+  return location.pathname.replace("/", "");
+} 
 function log(x) {
   console.log(x);
 }
