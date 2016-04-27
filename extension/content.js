@@ -40,8 +40,16 @@ let makeApiRequest = (index, title) => {
 }
 
 let  updateDOM = (response, index) => {
-  //get category i.e is it movie or series
-  let category = getCategory(index);
+  //get category i.e is it movie or series,
+  let category = "";
+  //if we are on the home page.
+  if(location.pathname === "/")
+     category = getCategory(index);
+ //if we are on series or movies page get it from the url
+  else
+    category = getPage();
+
+  //to get the category on other pages just check the url for that category
   if(response.Plot != undefined && response.Plot.length > 5 && category === response.Type) {
     //create the ahn-info node
     let ahnInfoNode = createAHNInfo(response);
