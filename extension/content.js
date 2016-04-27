@@ -1,18 +1,18 @@
 "use strict";
-var nowThumbnails;
-var nowThumbnailsOverlays = [];
-var titles = [];
+let nowThumbnails;
+let nowThumbnailsOverlays = [];
+let titles = [];
 window.onload  = () => {
   nowThumbnails = document.querySelectorAll('.now-thumbnail'); //$('.')
   getTitles(nowThumbnails);
-  for(var i = 0; i < titles.length; i++) {
+  for(let i = 0; i < titles.length; i++) {
     makeApiRequest(i, titles[i]);
   }
 };
 
-function getTitles (nowThumbnails) {
+let getTitles =  (nowThumbnails) => {
   [].forEach.call(nowThumbnails, (el) => {
-    var nowThumbnailChildren = el.childNodes;
+    let nowThumbnailChildren = el.childNodes;
     [].forEach.call(nowThumbnailChildren , (el) => {
       if(el.classList != undefined) {
         if(el.classList.contains("now-thumbnail-bottomtext")) {
@@ -26,30 +26,40 @@ function getTitles (nowThumbnails) {
   });
 }
 
-function makeApiRequest(index, title) {
-  var xhr = new XMLHttpRequest(); 
-  var encodedTitle = encodeURIComponent(title);
+let makeApiRequest = (index, title) => {
+  let xhr = new XMLHttpRequest(); 
+  let encodedTitle = encodeURIComponent(title);
   xhr.open('GET', 'https://www.omdbapi.com/?plot=short&r=json&t=' + title);
   xhr.send();
   xhr.onload = () => {
     if(xhr.status === 200) {
-      var jsonResponse = JSON.parse(xhr.response)
+      let jsonResponse = JSON.parse(xhr.response)
       updateDOM(jsonResponse, index)
     }
   }
 }
 
-function updateDOM(response, index) {
-  if(response.Plot != undefined && response.Plot.length > 5 && getPage() === response.Type) {
+let  updateDOM = (response, index) => {
+  //get category i.e is it movie or series
+  let category = getCategory(index);
+  if(response.Plot != undefined && response.Plot.length > 5 && category === response.Type) {
     //create the ahn-info node
-    var ahnInfoNode = createAHNInfo(response);
+    let ahnInfoNode = createAHNInfo(response);
     //get the nowThumbnail at index index
     nowThumbnailsOverlays[index].appendChild(ahnInfoNode)
   }
 }
 
-function createAHNInfo(response) {
- var ahnInfoHTML = ` <div class="ahn-info" data-year="${response.Year}"> 
+let getCategory = (index) => {
+  let parent = nowThumbnailsOverlays[index].parentNode;
+  let category= parent.dataset.category.toLowerCase();
+  if (category === "movies")
+        category = "movie";
+  return category; 
+}
+
+let createAHNInfo = (response) => {
+ let ahnInfoHTML = ` <div class="ahn-info" data-year="${response.Year}"> 
     <p class="plot">
       ${response.Plot}
     </p>
@@ -57,18 +67,18 @@ function createAHNInfo(response) {
       <span>Rating: </span>
       ${response.imdbRating}
   </div> `;
-  var ahnInfoNode = document.createElement('div');
+  let ahnInfoNode = document.createElement('div');
   ahnInfoNode.innerHTML = ahnInfoHTML;
   return ahnInfoNode;
 }
 
-function getPage() {
-  var page = location.pathname.replace("/", "");
+let getPage = () => {
+  let page = location.pathname.replace("/", "");
   if(page === "series")
       return "series";
   if (page === "movies")
       return "movie"; 
 } 
-function log(x) {
+let log = (x) => {
   console.log(x);
 }
