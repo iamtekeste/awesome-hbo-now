@@ -67,7 +67,7 @@ let getCategory = (index) => {
 }
 
 let createAHNInfo = (response) => {
- let ahnInfoHTML = ` <div class="ahn-info" data-year="${response.Year}"> 
+ let ahnInfoHTML = `<div class="ahn-info" data-year="${response.Year}"> 
     <p class="plot">
       ${response.Plot}
     </p>
@@ -77,7 +77,7 @@ let createAHNInfo = (response) => {
   </div> `;
   let ahnInfoNode = document.createElement('div');
   ahnInfoNode.innerHTML = ahnInfoHTML;
-  return ahnInfoNode;
+  return ahnInfoNode.firstChild;
 }
 
 let getPage = () => {
