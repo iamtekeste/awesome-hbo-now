@@ -7,6 +7,7 @@
 
 ## Todo
 * Control player with keyboard arrows
+* Filter tv shows/movies by cast
 * Filter tv shows/movies by release year
 
 ## Dev
