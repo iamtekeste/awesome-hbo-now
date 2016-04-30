@@ -67,9 +67,12 @@ let getCategory = (index) => {
 }
 
 let createAHNInfo = (response) => {
+ var trimmedPlot = response.Plot.substr(0, 138);
+ trimmedPlot = trimmedPlot.substr(0, Math.min(trimmedPlot.length, trimmedPlot.lastIndexOf(" ")));
+
  let ahnInfoHTML = `<div class="ahn-info" data-year="${response.Year}"> 
     <p class="plot">
-      ${response.Plot}
+      ${trimmedPlot} ...
     </p>
     <span class="ahn-imdb-rating"> 
       <span>Rating: </span>
