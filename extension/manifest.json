@@ -1,6 +1,6 @@
 {
   "name": "Awesome HBO NOW",
-  "description": "HBO NOW keyboard shortcuts to increase/decrease volume, mute volume and seek forward & backward. And also shows IMDB rating and info for the shows and movies",
+  "description": "Awesome HBO NOW shows IMDB rating and plot for the tv shows and movies",
   "version": "1.0",
   "homepage_url": "https://github.com/iamtekeste/awesome-hbo-now.git",
   "manifest_version": 2,
