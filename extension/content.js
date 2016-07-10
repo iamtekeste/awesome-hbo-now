@@ -45,8 +45,7 @@ var AHN = {
     });
   },
   appendToOverlay: function(ahnInfoNode, el) {
-    var overLay = el.querySelector(this.assetOverlaySelector);
-    overLay.appendChild(ahnInfoNode);
+    el.appendChild(ahnInfoNode);
   },
   createAHNInfo: function(assetData) {
    let ahnInfoHTML = `<div class="ahn-info" data-year="${assetData.releaseDate}">
