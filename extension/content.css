@@ -3,17 +3,20 @@
     height: 100%;
     background: rgba(0,0,0,.6);
     padding: 10px;
+    padding-bottom: 0;
     top: 0;
     position: absolute;
 }
-span.ahn-imdb-rating {
+.ahn-info p.plot {
+  margin: 0;
+}
+span.ahn-rating {
     display: block;
-    margin-top: 5px;
     font-size: 13px;
 }
 span.ahn-staring{
 	font-size: 13px;
 }
-span.ahn-imdb-rating span , span.ahn-staring span{
+span.ahn-rating span , span.ahn-staring span{
     color: yellow;
 }
