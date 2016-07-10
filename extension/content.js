@@ -1,91 +1,80 @@
-"use strict";
-let nowThumbnails;
-let nowThumbnailsOverlays = [];
-let titles = [];
-window.onload  = () => {
-  nowThumbnails = document.querySelectorAll('.now-thumbnail');
-  getTitles(nowThumbnails);
-  for(let i = 0; i < titles.length; i++) {
-    makeApiRequest(i, titles[i]);
-  }
-};
-let getTitles =  (nowThumbnails) => {
-  [].forEach.call(nowThumbnails, (el) => {
-    let nowThumbnailChildren = el.childNodes;
-    [].forEach.call(nowThumbnailChildren , (el) => {
-      if(el.classList != undefined) {
-        if(el.classList.contains("now-thumbnail-bottomtext")) {
-          titles.push( el.childNodes[1].innerHTML );
-        }
-        if(el.classList.contains("now-thumbnail-overlay")) {
-          nowThumbnailsOverlays.push(el);
-        }
-      }
-    });
-  });
-}
+/*
+* Awesome HBO NOW (AHN)
+*/
 
-let makeApiRequest = (index, title) => {
-  let xhr = new XMLHttpRequest();
-  let encodedTitle = encodeURIComponent(title);
-  xhr.open('GET', 'https://www.omdbapi.com/?plot=short&r=json&t=' + title);
-  xhr.send();
-  xhr.onload = () => {
-    if(xhr.status === 200) {
-      let jsonResponse = JSON.parse(xhr.response)
-      updateDOM(jsonResponse, index)
+var AHN = {
+  //asset can either be a movie or tv show
+  assetSelector: '.now-thumbnail',
+  assetOverlaySelector: '.now-thumbnail-overlay',
+  omdbApi: 'https://www.omdbapi.com/?plot=short&r=json&t=',
+  init: function() {
+    this.extractAssetData();
+  },
+  extractAssetData: function() {
+    var assetContainers = document.querySelectorAll(this.assetSelector);
+    [].forEach.call(assetContainers, (el) => {
+
+      //let's get all the data attributes on el, specifically data-asset
+      var assetData = JSON.parse(el.dataset.asset);
+
+      /*
+      * Sometimes HBO does not give us all the info we need in that case
+      * we will get the it from OMDB api
+      */
+      if(assetData.description === undefined) {
+        this.makeApiRequest(assetData.title, (data) => {
+          if(data.Plot != undefined) {
+            assetData.description = data.Plot;
+            //ahnInfoNode is the overlay node that will display the data
+            var ahnInfoNode = this.createAHNInfo(assetData);
+            //we are appending it to the parent node's overlay, the overlay shows on mouse hover
+            this.appendToOverlay(ahnInfoNode, el);
+          }
+        });
+      }
+      /*
+      * But if we have all the data we need we will go ahead and build the info node
+      */
+      else {
+        //ahnInfoNode is the overlay node that will display the data
+        var ahnInfoNode = this.createAHNInfo(assetData);
+        //we are appending it to the parent node's overlay, the overlay shows on mouse hover
+        this.appendToOverlay(ahnInfoNode, el);
+      }
+
+    });
+  },
+  appendToOverlay: function(ahnInfoNode, el) {
+    var overLay = el.querySelector(this.assetOverlaySelector);
+    overLay.appendChild(ahnInfoNode);
+  },
+  createAHNInfo: function(assetData) {
+   let ahnInfoHTML = `<div class="ahn-info" data-year="${assetData.releaseDate}">
+      <p class="plot">
+        ${assetData.description}
+      </p>
+      <span class="ahn-rating">
+        <span>Rating: </span>
+        ${assetData.rating}
+    </div> `;
+    let ahnInfoNode = document.createElement('div');
+    ahnInfoNode.innerHTML = ahnInfoHTML;
+    return ahnInfoNode.firstChild;
+  },
+  makeApiRequest: function(title, cb) {
+    var xhr = new XMLHttpRequest();
+    var url = this.omdbApi + title;
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.onload = function() {
+      if(xhr.status === 200) {
+        var data = JSON.parse(xhr.response);
+        cb(data);
+      }
     }
   }
-}
+};
 
-let  updateDOM = (response, index) => {
-  //get category i.e is it movie or series,
-  let category = "";
-  //if we are on the home page.
-  if(location.pathname === "/")
-     category = getCategory(index);
- //if we are on series or movies page get it from the url
-  else
-    category = getPage();
-
-  //to get the category on other pages just check the url for that category
-  if(response.Plot != undefined && response.Plot.length > 5 && category === response.Type) {
-    //create the ahn-info node
-    let ahnInfoNode = createAHNInfo(response);
-    //get the nowThumbnail at index index
-    nowThumbnailsOverlays[index].appendChild(ahnInfoNode)
-  }
-}
-
-let getCategory = (index) => {
-  let parent = nowThumbnailsOverlays[index].parentNode;
-  let category= parent.dataset.category.toLowerCase();
-  if (category === "movies")
-        category = "movie";
-  return category;
-}
-
-let createAHNInfo = (response) => {
- var trimmedPlot = response.Plot.substr(0, 138);
- trimmedPlot = trimmedPlot.substr(0, Math.min(trimmedPlot.length, trimmedPlot.lastIndexOf(" ")));
-
- let ahnInfoHTML = `<div class="ahn-info" data-year="${response.Year}">
-    <p class="plot">
-      ${trimmedPlot} ...
-    </p>
-    <span class="ahn-imdb-rating">
-      <span>Rating: </span>
-      ${response.imdbRating}
-  </div> `;
-  let ahnInfoNode = document.createElement('div');
-  ahnInfoNode.innerHTML = ahnInfoHTML;
-  return ahnInfoNode.firstChild;
-}
-
-let getPage = () => {
-  let page = location.pathname.replace("/", "");
-  if(page === "series")
-      return "series";
-  if (page === "movies")
-      return "movie";
-}
+window.onload  = () => {
+  AHN.init();
+};
