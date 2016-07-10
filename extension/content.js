@@ -19,9 +19,10 @@ var AHN = {
 
       /*
       * Sometimes HBO does not give us all the info we need in that case
-      * we will get the it from OMDB api
+      * we will get the it from OMDB api. For example HBO does not give as series synopsis
+      * on "/series"
       */
-      if(assetData.description === undefined) {
+      if(assetData.description === undefined || window.location.pathname === "/series") {
         this.makeApiRequest(assetData.title, (data) => {
           if(data.Plot != undefined) {
             assetData.description = data.Plot;
