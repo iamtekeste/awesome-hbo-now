@@ -3,13 +3,12 @@ let nowThumbnails;
 let nowThumbnailsOverlays = [];
 let titles = [];
 window.onload  = () => {
-  nowThumbnails = document.querySelectorAll('.now-thumbnail'); //$('.')
+  nowThumbnails = document.querySelectorAll('.now-thumbnail');
   getTitles(nowThumbnails);
   for(let i = 0; i < titles.length; i++) {
     makeApiRequest(i, titles[i]);
   }
 };
-
 let getTitles =  (nowThumbnails) => {
   [].forEach.call(nowThumbnails, (el) => {
     let nowThumbnailChildren = el.childNodes;
@@ -27,7 +26,7 @@ let getTitles =  (nowThumbnails) => {
 }
 
 let makeApiRequest = (index, title) => {
-  let xhr = new XMLHttpRequest(); 
+  let xhr = new XMLHttpRequest();
   let encodedTitle = encodeURIComponent(title);
   xhr.open('GET', 'https://www.omdbapi.com/?plot=short&r=json&t=' + title);
   xhr.send();
@@ -63,18 +62,18 @@ let getCategory = (index) => {
   let category= parent.dataset.category.toLowerCase();
   if (category === "movies")
         category = "movie";
-  return category; 
+  return category;
 }
 
 let createAHNInfo = (response) => {
  var trimmedPlot = response.Plot.substr(0, 138);
  trimmedPlot = trimmedPlot.substr(0, Math.min(trimmedPlot.length, trimmedPlot.lastIndexOf(" ")));
 
- let ahnInfoHTML = `<div class="ahn-info" data-year="${response.Year}"> 
+ let ahnInfoHTML = `<div class="ahn-info" data-year="${response.Year}">
     <p class="plot">
       ${trimmedPlot} ...
     </p>
-    <span class="ahn-imdb-rating"> 
+    <span class="ahn-imdb-rating">
       <span>Rating: </span>
       ${response.imdbRating}
   </div> `;
@@ -88,8 +87,5 @@ let getPage = () => {
   if(page === "series")
       return "series";
   if (page === "movies")
-      return "movie"; 
-} 
-let log = (x) => {
-  console.log(x);
+      return "movie";
 }
